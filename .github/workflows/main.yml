@@ -51,5 +51,4 @@ jobs:
         # uses: docker/build-push-action@6925f94b6b8f23d547930f88b9886036ac92d510
         uses: docker/build-push-action@v2.2.0
         with:
-          push: true
           tags: eyesofbanquo/node-docker:latest
