@@ -34,6 +34,14 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
+      
+      # Extra the branch and commit names for docker
+      - name: Extract branch
+        run: echo "::set-output name=DOCKER_BRANCH::$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      - name: Extract commit
+        run: echo "::set-output name=DOCKER_COMMIT::$(echo ${GITHUB_SHA})"
+        id: extract_commit
           
       - name: Docker Setup Buildx
         # You may pin to the exact commit or the version.
@@ -58,4 +66,4 @@ jobs:
         uses: docker/build-push-action@v2.2.0
         with:
           push: true
-          tags: eyesofbanquo/node-docker:latest
+          tags: eyesofbanquo/node-docker:${{steps.extract_branch.outputs.DOCKER_BRANCH}}-${{steps.extract_commit.outputs.DOCKER_COMMIT}}
