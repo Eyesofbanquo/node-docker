@@ -64,4 +64,4 @@ jobs:
         uses: docker/build-push-action@v2.2.0
         with:
           push: true
-          tags: eyesofbanquo/node-docker:${{steps.extract_branch.outputs.DOCKER_BRANCH}}-${{steps.extract_commit.outputs.DOCKER_COMMIT}}
+          tags: eyesofbanquo/avon:${{steps.extract_branch.outputs.DOCKER_BRANCH}}-${{steps.extract_commit.outputs.DOCKER_COMMIT}}
