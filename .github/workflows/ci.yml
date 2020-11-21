@@ -32,9 +32,6 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           # Log out from the Docker registry at the end of a job
           logout: true
-      - uses: satackey/action-docker-layer-caching@v0.0.8
-        # Ignore the failure of a step and avoid terminating the job.
-        continue-on-error: true
 
       - name: Build the docker-compose.ci
         run: docker-compose -f docker-compose.ci.yml up --exit-code-from web
