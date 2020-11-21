@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Build For Production Flow
 
 # Controls when the action will run.
 on:
@@ -64,4 +64,4 @@ jobs:
         uses: docker/build-push-action@v2.2.0
         with:
           push: true
-          tags: eyesofbanquo/node-docker:${{steps.extract_branch.outputs.DOCKER_BRANCH}}-${{steps.extract_commit.outputs.DOCKER_COMMIT}}
+          tags: eyesofbanquo/${{secrets.PROD_NAME}}:${{steps.extract_branch.outputs.DOCKER_BRANCH}}-${{steps.extract_commit.outputs.DOCKER_COMMIT}}
