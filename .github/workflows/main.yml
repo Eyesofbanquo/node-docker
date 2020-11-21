@@ -40,7 +40,7 @@ jobs:
         run: echo "::set-output name=DOCKER_BRANCH::$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
       - name: Extract commit
-        run: echo "::set-output name=DOCKER_COMMIT::$(echo ${GITHUB_SHA})"
+        run: echo "::set-output name=DOCKER_COMMIT::$(echo git rev-parse --short ${GITHUB_SHA})"
         id: extract_commit
           
       - name: Docker Setup Buildx
