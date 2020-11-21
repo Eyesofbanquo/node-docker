@@ -2,19 +2,43 @@
 
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Docker Login
+        # You may pin to the exact commit or the version.
+        # uses: docker/login-action@adb73476b6e06caddec5db0bc1deacbec8cdd947
+        uses: docker/login-action@v1.6.0
+        with:
+          # Username used to log against the Docker registry
+          username: ${{ secrets.DOCKER_USERNAME }}
+          # Password or personal access token used to log against the Docker registry
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          # Log out from the Docker registry at the end of a job
+          logout: true
+
+      - name: Build Docker images
+        run: docker build -t test-image -f ./Dockerfile.ci .
+
+      - name: Run Docker image
+        run: docker run nodey
+
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
@@ -34,7 +58,7 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
-      
+
       # Extra the branch and commit names for docker
       - name: Extract branch
         run: echo "::set-output name=DOCKER_BRANCH::$(echo ${GITHUB_REF#refs/heads/})"
@@ -42,12 +66,12 @@ jobs:
       - name: Extract commit
         run: echo "::set-output name=DOCKER_COMMIT::$(git rev-parse --short ${GITHUB_SHA})"
         id: extract_commit
-          
+
       - name: Docker Setup Buildx
         # You may pin to the exact commit or the version.
         # uses: docker/setup-buildx-action@07b1484797040ef4a1109a03e65b923de8f39e07
         uses: docker/setup-buildx-action@v1.0.3
-        
+
       - name: Docker Login
         # You may pin to the exact commit or the version.
         # uses: docker/login-action@adb73476b6e06caddec5db0bc1deacbec8cdd947
