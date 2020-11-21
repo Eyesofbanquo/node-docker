@@ -30,8 +30,5 @@ jobs:
           # Log out from the Docker registry at the end of a job
           logout: true
 
-      - name: Build Docker images
-        run: docker build -t test-image -f ./Dockerfile.ci .
-
-      - name: Run Docker image
-        run: docker run test-image
+      - name: Build the docker-compose.ci
+        run: docker-compose -f docker-compose.ci.yml up --exit-code-from web
