@@ -4,10 +4,11 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "dev": "nodemon -x ts-node ./server.ts",
     "start": "ts-node ./server.ts",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "test": "mocha -r ts-node/register *.ts --exit"
   },
   "author": "",
   "license": "ISC",
@@ -19,5 +20,11 @@
     "ts-node": "^9.0.0",
     "tsc-node": "0.0.3",
     "typescript": "^4.0.5"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.14",
+    "@types/mocha": "^8.0.4",
+    "chai": "^4.2.0",
+    "mocha": "^8.2.1"
   }
 }
