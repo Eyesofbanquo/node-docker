@@ -34,4 +34,4 @@ jobs:
           logout: true
 
       - name: Build the docker-compose.ci
-        run: docker-compose -f docker-compose.ci.yml --project-name avon-ci up --exit-code-from web
+        run: docker-compose -f docker-compose.ci.yml --project-name ${{secrets.DOCKER_CI_PROJECT_NAME}} up --exit-code-from web
