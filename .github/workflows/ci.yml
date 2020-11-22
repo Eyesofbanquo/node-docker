@@ -4,9 +4,6 @@ name: Pull Request Flow
 
 # Controls when the action will run.
 on:
-  push:
-    branches-ignore:
-      - "master"
   pull_request:
     branches: [master]
 
