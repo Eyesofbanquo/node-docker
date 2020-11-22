@@ -7,11 +7,14 @@ WORKDIR /app
 
 COPY ["package.json", "package-lock.json*", "./"]
 
+# psql
+RUN apt-get update && apt-get install -y postgresql
+
 RUN npm install ts-node
 
 RUN npm install --production
 
 COPY . .
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start"]
 

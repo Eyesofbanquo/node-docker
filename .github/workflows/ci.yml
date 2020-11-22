@@ -4,9 +4,6 @@ name: Pull Request Flow
 
 # Controls when the action will run.
 on:
-  push:
-    branches-ignore:
-      - "master"
   pull_request:
     branches: [master]
 
@@ -34,4 +31,4 @@ jobs:
           logout: true
 
       - name: Build the docker-compose.ci
-        run: docker-compose -f docker-compose.ci.yml up --exit-code-from web
+        run: docker-compose -f docker-compose.ci.yml --project-name ${{secrets.DOCKER_CI_PROJECT_NAME}} up --exit-code-from web

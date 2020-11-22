@@ -8,10 +8,9 @@ services:
       - "8000:3000"
     depends_on:
       - db
-    volumes:
-      - ".:/app:rw"
   db:
     image: postgres:latest
-    env_file: .env
+    environment:
+      - POSTGRES_DB=avon
     ports:
       - "5432:5432"
