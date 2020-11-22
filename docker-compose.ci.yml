@@ -8,8 +8,6 @@ services:
       - "8000:3000"
     depends_on:
       - db
-    environment:
-      - DATABASE_URL=postgres://postgres:password@avon-ci_db_1:5432/avon
   db:
     image: postgres:latest
     environment:
