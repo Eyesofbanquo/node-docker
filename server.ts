@@ -1,5 +1,10 @@
-import express, { Router, Application } from "express";
+import express from "express";
 import * as bodyParser from "body-parser";
+import pool, { setup } from "./src/db/pool";
+
+require("dotenv").config();
+
+setup();
 
 const app = express();
 app.use(bodyParser.json());
