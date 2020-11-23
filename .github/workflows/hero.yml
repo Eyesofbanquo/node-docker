@@ -30,4 +30,5 @@ jobs:
           heroku_app_name: "warm-meadow-59872"
           healthcheck: "https://warm-meadow-59872.herokuapp.com/health"
           heroku_email: "ms79723@gmail.com"
+          checkstring: "ok"
           rollbackonhealthcheckfailed: true
