@@ -123,10 +123,7 @@ export class AppController {
     });
 
     this.app.get("/health", (request, response) => {
-      response.send({
-        success: true,
-        data: { message: "Everything is running as it should!" },
-      });
+      response.send("ok");
     });
   }
 }
