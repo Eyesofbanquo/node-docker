@@ -16,94 +16,112 @@ setup();
 const secret_token = process.env.JWT_SECRET;
 const secret_refresh_token = process.env.JWT_REFRESH_SECRET;
 
-const app = express();
-app.use(bodyParser.json());
+export class AppController {
+  app: express.Express;
+  port: string;
 
-app.get("/", (request, response) => {
-  response.send({ success: true });
-});
+  constructor() {
+    this.app = express();
+    this.port = process.env.PORT || "3000";
 
-app.get("/hello", (request, response) => {
-  response.send({ data: "Hello world" });
-});
+    this.setupRoutes();
+  }
 
-app.post("/register", hasher, async (request, response) => {
-  const { username, password } = request.body;
+  setupRoutes() {
+    this.app.use(bodyParser.json());
 
-  await createUser({ username: username, password: password })
-    .then((res) => {
-      console.log(res.rows);
-      if (res.rows.length === 0) {
-        response.send({ success: false, data: null });
-      }
-
-      if (res.rows.length > 0) {
-        response.send({ success: true, data: res.rows[0] });
-      }
-    })
-    .catch((err) => response.send({ success: false, error: err }));
-});
-
-app.post(
-  "/login",
-  retrieveUser,
-  createTokens,
-  saveRefreshToken,
-  (request, response) => {
-    const { user, refreshToken, accessToken } = request.body;
-
-    response.send({
-      success: true,
-      data: {
-        user: user,
-        refreshToken: refreshToken,
-        accessToken: accessToken,
-      },
+    this.app.get("/", (request, response) => {
+      response.send({ success: true });
     });
-  }
-);
 
-app.post("/refresh", async (request, response) => {
-  const { refreshToken } = request.body;
+    this.app.get("/hello", (request, response) => {
+      response.send({ data: "Hello world" });
+    });
 
-  if (!refreshToken) {
-    return response.sendStatus(401);
-  }
+    this.app.post("/register", hasher, async (request, response) => {
+      const { username, password } = request.body;
 
-  await getTokens()
-    .then((results) => {
-      const tokenExists = results.rows.find(
-        (tokenRow) => tokenRow.refresh_token === refreshToken
-      );
-      if (tokenExists) {
-        jwt.verify(refreshToken, secret_refresh_token, (err, user) => {
-          if (err) {
+      await createUser({ username: username, password: password })
+        .then((res) => {
+          console.log(res.rows);
+          if (res.rows.length === 0) {
+            response.send({ success: false, data: null });
+          }
+
+          if (res.rows.length > 0) {
+            response.send({ success: true, data: res.rows[0] });
+          }
+        })
+        .catch((err) => response.send({ success: false, error: err }));
+    });
+
+    this.app.post(
+      "/login",
+      retrieveUser,
+      createTokens,
+      saveRefreshToken,
+      (request, response) => {
+        const { user, refreshToken, accessToken } = request.body;
+
+        response.send({
+          success: true,
+          data: {
+            user: user,
+            refreshToken: refreshToken,
+            accessToken: accessToken,
+          },
+        });
+      }
+    );
+
+    this.app.post("/refresh", async (request, response) => {
+      const { refreshToken } = request.body;
+
+      if (!refreshToken) {
+        return response.sendStatus(401);
+      }
+
+      await getTokens()
+        .then((results) => {
+          const tokenExists = results.rows.find(
+            (tokenRow) => tokenRow.refresh_token === refreshToken
+          );
+          if (tokenExists) {
+            jwt.verify(refreshToken, secret_refresh_token, (err, user) => {
+              if (err) {
+                return response.sendStatus(403);
+              }
+              const accessToken = jwt.sign(
+                { username: user.username, id: user.id, admin: user.is_admin },
+                secret_token,
+                { expiresIn: "20m" }
+              );
+              response.send({
+                success: true,
+                data: { accessToken: accessToken },
+              });
+            });
+          } else {
             return response.sendStatus(403);
           }
-          const accessToken = jwt.sign(
-            { username: user.username, id: user.id, admin: user.is_admin },
-            secret_token,
-            { expiresIn: "20m" }
-          );
-          response.send({ success: true, data: { accessToken: accessToken } });
-        });
-      } else {
-        return response.sendStatus(403);
-      }
-    })
-    .catch((err) => response.send({ success: false, error: err }));
-});
+        })
+        .catch((err) => response.send({ success: false, error: err }));
+    });
 
-app.post("/logout", async (request, response) => {
-  const { id } = request.body;
+    this.app.post("/logout", async (request, response) => {
+      const { id } = request.body;
 
-  await deleteToken({ userId: id })
-    .then((results) => {
-      response.send({ success: true, data: { message: "Logged out!" } });
-    })
-    .catch((err) => response.send({ success: false, error: err }));
-});
+      await deleteToken({ userId: id })
+        .then((results) => {
+          response.send({ success: true, data: { message: "Logged out!" } });
+        })
+        .catch((err) => response.send({ success: false, error: err }));
+    });
+  }
+}
 
-app.listen(3000, () => {
-  console.log("Running on 3000");
-});
+const controller = new AppController();
+
+controller.app.listen(controller.port, () =>
+  console.log("Running on port", controller.port)
+);
