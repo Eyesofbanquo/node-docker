@@ -23,7 +23,13 @@ const createDefaultTable = async () => {
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4 (),
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
+    is_admin BOOLEAN NOT NULL,
     created_date TIMESTAMP DEFAULT (now() at time zone 'utc')
+  )`);
+
+  await pool.query(`CREATE TABLE IF NOT EXISTS refresh_tokens (
+    user_id UUID REFERENCES users(id) PRIMARY KEY,
+    refresh_token TEXT NOT NULL UNIQUE
   )`);
 };
 
