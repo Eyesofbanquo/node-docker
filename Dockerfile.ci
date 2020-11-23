@@ -16,7 +16,5 @@ RUN npm ci --also=dev
 
 COPY . .
 
-RUN echo $DATABASE_URL
-
 CMD ["npm", "run", "test"]
 
