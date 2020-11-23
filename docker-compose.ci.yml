@@ -8,6 +8,12 @@ services:
       - "8000:3000"
     depends_on:
       - db
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - JWT_SECRET
+      - JWT_REFRESH_SECRET
+      - DATABASE_URL
   db:
     image: postgres:latest
     environment:
