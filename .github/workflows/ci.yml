@@ -15,8 +15,18 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
+      POSTGRES_USER: ${{secrets.POSTGRES_USER}}
+      JWT_SECRET: ${{secrets.JWT_SECRET}}
+      JWT_REFRESH_SECRET: ${{secrets.JWT_REFRESH_SECRET}}
+      DATABASE_URL: ${{secrets.DATABASE_URL}}
+
     steps:
       - uses: actions/checkout@v2
+
+      - name: Print env vars
+        run: echo $POSTGRES_PASSWORD
 
       - name: Docker Login
         # You may pin to the exact commit or the version.
@@ -30,5 +40,5 @@ jobs:
           # Log out from the Docker registry at the end of a job
           logout: true
 
-      - name: Build the docker-compose.ci
+      - name: Build & Run Tests
         run: docker-compose -f docker-compose.ci.yml --project-name ${{secrets.DOCKER_CI_PROJECT_NAME}} up --exit-code-from web
