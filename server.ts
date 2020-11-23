@@ -8,6 +8,7 @@ import {
   retrieveUser,
   createTokens,
   saveRefreshToken,
+  checkForResponseToken,
 } from "./src/api/middleware";
 import { createUser, deleteToken, getTokens } from "./src/api/queries";
 
@@ -43,9 +44,11 @@ export class AppController {
 
       await createUser({ username: username, password: password })
         .then((res) => {
-          console.log(res.rows);
           if (res.rows.length === 0) {
-            response.send({ success: false, data: null });
+            response.send({
+              success: false,
+              data: { message: "User already exists" },
+            });
           }
 
           if (res.rows.length > 0) {
@@ -58,6 +61,7 @@ export class AppController {
     this.app.post(
       "/login",
       retrieveUser,
+      checkForResponseToken,
       createTokens,
       saveRefreshToken,
       (request, response) => {

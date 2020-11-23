@@ -39,7 +39,7 @@ export const createUsersTable = () => {
 
 export const createTokensTable = () => {
   return pool.query(`CREATE TABLE IF NOT EXISTS ${getTokensTable()} (
-    user_id UUID REFERENCES users(id) PRIMARY KEY,
+    user_id UUID REFERENCES ${getUsersTable()}(id) PRIMARY KEY,
     refresh_token TEXT NOT NULL UNIQUE
   )`);
 };

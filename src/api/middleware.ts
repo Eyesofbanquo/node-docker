@@ -1,27 +1,42 @@
 import bcrypt from "bcrypt";
 import pool from "../db/pool";
 import * as jwt from "jsonwebtoken";
+import { getTokensTable, getUsersTable } from "./queries";
+
+var salt = bcrypt.genSaltSync();
 
 const secret_token = process.env.JWT_SECRET;
 const secret_refresh_token = process.env.JWT_REFRESH_SECRET;
 
 export const retrieveUser = async (request, response, next) => {
-  const { username } = request.body;
+  const { username, password } = request.body;
 
   await pool
-    .query(`SELECT id, username, is_admin FROM users WHERE username = $1`, [
-      username,
-    ])
+    .query(
+      `SELECT id, password, username, is_admin FROM ${getUsersTable()} WHERE username = $1`,
+      [username]
+    )
     .then((res) => {
       if (res.rows.length === 0) {
-        next(new Error("User does not exist"));
+        response.send({
+          success: false,
+          data: { message: "User does not exist" },
+        });
       }
 
       if (res.rows.length > 0) {
-        console.log("help");
         const user = res.rows[0];
-        request.body = { user: res.rows[0] };
-        next();
+        bcrypt.compare(password, user.password).then((match) => {
+          if (match) {
+            request.body = { user: res.rows[0] };
+            next();
+          } else {
+            return response.send({
+              success: false,
+              data: { message: "Incorrect password" },
+            });
+          }
+        });
       }
     })
     .catch((err) => next(err));
@@ -30,18 +45,20 @@ export const retrieveUser = async (request, response, next) => {
 export const checkForResponseToken = async (request, response, next) => {
   const { user } = request.body;
 
-  await pool.query(`SELECT * FROM refresh_tokens`).then((results) => {
-    const row = results.rows.find((tokenRow) => tokenRow.user_id === user.id);
-
-    if (row.refresh_token) {
-      response.send({
-        success: false,
-        data: { message: "User is already logged in" },
-      });
-    } else {
-      next();
-    }
-  });
+  await pool
+    .query(`SELECT * FROM ${getTokensTable()}`)
+    .then((results) => {
+      const row = results.rows.find((tokenRow) => tokenRow.user_id === user.id);
+      if (row) {
+        response.send({
+          success: false,
+          data: { message: "User is already logged in" },
+        });
+      } else {
+        next();
+      }
+    })
+    .catch((err) => next(err));
 };
 
 export const createTokens = (request, response, next) => {
@@ -64,7 +81,6 @@ export const createTokens = (request, response, next) => {
     };
     next();
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
@@ -74,7 +90,7 @@ export const saveRefreshToken = async (request, response, next) => {
 
   await pool
     .query(
-      `INSERT INTO refresh_tokens (user_id, refresh_token)
+      `INSERT INTO ${getTokensTable()} (user_id, refresh_token)
   VALUES ($1, $2) 
   ON CONFLICT DO NOTHING
   RETURNING *`,
@@ -84,15 +100,21 @@ export const saveRefreshToken = async (request, response, next) => {
       if (result.rows.length > 0) {
         next();
       } else {
-        response.send({ success: false, error: "User is already logged in" });
+        response.send({
+          success: false,
+          data: { message: "User is already logged in." },
+        });
       }
+    })
+    .catch((err) => {
+      next(err);
     });
 };
 
 export const hasher = (request, response, next) => {
   const { username, password } = request.body;
 
-  bcrypt.hash(password, 10, (err, hash) => {
+  bcrypt.hash(password, salt, (err, hash) => {
     if (err) {
       response.send({ success: false, error: err });
       next(err);
