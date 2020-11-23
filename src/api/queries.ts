@@ -28,12 +28,19 @@ export const createUUIDExtension = () => {
   return pool.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`);
 };
 export const createUsersTable = () => {
-  return pool.query(`CREATE TABLE IF NOT EXISTS users (
+  return pool.query(`CREATE TABLE IF NOT EXISTS ${getUsersTable()} (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4 (),
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     is_admin BOOLEAN NOT NULL,
     created_date TIMESTAMP DEFAULT (now() at time zone 'utc')
+  )`);
+};
+
+export const createTokensTable = () => {
+  return pool.query(`CREATE TABLE IF NOT EXISTS ${getTokensTable()} (
+    user_id UUID REFERENCES users(id) PRIMARY KEY,
+    refresh_token TEXT NOT NULL UNIQUE
   )`);
 };
 
@@ -46,7 +53,7 @@ export const createUser = (props: { username: string; password: string }) => {
     `INSERT INTO ${getUsersTable()} (username, password, is_admin)
   VALUES ($1, $2, $3)
    ON CONFLICT (username) DO NOTHING
-    RETURNING *`,
+    RETURNING id, username, is_admin`,
     [props.username, props.password, false]
   );
 };
@@ -59,4 +66,12 @@ export const deleteToken = (props: { userId: string }) => {
   return pool.query(`DELETE FROM ${getTokensTable()} WHERE user_id = $1`, [
     props.userId,
   ]);
+};
+
+export const deleteUsersTable = () => {
+  return pool.query(`DROP TABLE ${getUsersTable()}`);
+};
+
+export const deleteTokensTable = () => {
+  return pool.query(`DROP TABLE ${getTokensTable()}`);
 };

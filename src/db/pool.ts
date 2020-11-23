@@ -34,8 +34,8 @@ const createDefaultTable = async () => {
 };
 
 export const setup = async () => {
-  await createUUIDExtension();
-  await createDefaultTable();
+  if (process.env.NODE_ENV !== "ci") {
+    await createUUIDExtension();
+    await createDefaultTable();
+  }
 };
-
-console.log("Created Database!");
