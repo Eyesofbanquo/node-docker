@@ -9,6 +9,7 @@ import {
   createTokens,
   saveRefreshToken,
 } from "./src/api/middleware";
+import { createUser, deleteToken, getTokens } from "./src/api/queries";
 
 setup();
 
@@ -29,15 +30,7 @@ app.get("/hello", (request, response) => {
 app.post("/register", hasher, async (request, response) => {
   const { username, password } = request.body;
 
-  console.log(password);
-  await pool
-    .query(
-      `INSERT INTO users (username, password, is_admin)
-       VALUES ($1, $2, $3)
-        ON CONFLICT (username) DO NOTHING
-         RETURNING *`,
-      [username, password, false]
-    )
+  await createUser({ username: username, password: password })
     .then((res) => {
       console.log(res.rows);
       if (res.rows.length === 0) {
@@ -77,8 +70,7 @@ app.post("/refresh", async (request, response) => {
     return response.sendStatus(401);
   }
 
-  await pool
-    .query(`SELECT * FROM refresh_tokens`)
+  await getTokens()
     .then((results) => {
       const tokenExists = results.rows.find(
         (tokenRow) => tokenRow.refresh_token === refreshToken
@@ -105,8 +97,7 @@ app.post("/refresh", async (request, response) => {
 app.post("/logout", async (request, response) => {
   const { id } = request.body;
 
-  await pool
-    .query(`DELETE FROM refresh_tokens WHERE user_id = id`)
+  await deleteToken({ userId: id })
     .then((results) => {
       response.send({ success: true, data: { message: "Logged out!" } });
     })
