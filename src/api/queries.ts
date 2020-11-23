@@ -9,18 +9,18 @@ let usersTable;
 let tokensTable;
 
 export const getUsersTable = () => {
-  if (process.env.NODE_ENV === "dev") {
-    return USERS_TABLE;
-  } else if (process.env.NODE_ENV === "ci") {
+  if (process.env.NODE_ENV === "ci") {
     return USERS_CI_TABLE;
+  } else {
+    return USERS_TABLE;
   }
 };
 
 export const getTokensTable = () => {
-  if (process.env.NODE_ENV === "dev") {
-    return TOKENS_TABLE;
-  } else if (process.env.NODE_ENV === "ci") {
+  if (process.env.NODE_ENV === "ci") {
     return TOKENS_CI_TABLE;
+  } else {
+    return TOKENS_TABLE;
   }
 };
 

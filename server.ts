@@ -121,6 +121,13 @@ export class AppController {
         })
         .catch((err) => response.send({ success: false, error: err }));
     });
+
+    this.app.get("/health", (request, response) => {
+      response.send({
+        success: true,
+        data: { message: "Everything is running as it should!" },
+      });
+    });
   }
 }
 
