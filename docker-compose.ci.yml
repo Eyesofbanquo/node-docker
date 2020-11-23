@@ -9,8 +9,6 @@ services:
     depends_on:
       - db
     environment:
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
       - JWT_SECRET
       - JWT_REFRESH_SECRET
       - DATABASE_URL
@@ -18,5 +16,7 @@ services:
     image: postgres:latest
     environment:
       - POSTGRES_DB=avon
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
     ports:
       - "5432:5432"
