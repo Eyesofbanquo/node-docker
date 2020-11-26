@@ -12,6 +12,7 @@
     "tsc": "tsc",
     "danger": "danger ci",
     "danger:ci:pr": "danger --dangerfile ./.ci/danger/dangerfile.ci.ts ci",
+    "danger:ci:prod": "danger --dangerfile ./.ci/danger/dangerfile.prod.ts ci",
     "danger:local": "danger pr"
   },
   "author": "",
