@@ -13,7 +13,7 @@ if (danger.git.commits.length > 10) {
 }
 
 const modifiedMD = danger.git.modified_files.join(" | ");
-message("Changed Files in this PR: \n " + modifiedMD);
+message("Changed Files in this PR: \n\n " + modifiedMD);
 
 glob.glob("./src/api/**/*.route.ts", (err, matches) => {
   const routes = matches.map((file) => file.split("/").pop());
