@@ -23,6 +23,11 @@ if (commitsWithoutMessages.length > 0) {
   );
 }
 
+const routesSmoker = danger.git.fileMatch("./**/*.route.ts");
+message(
+  "Here are the routes:" + routesSmoker.getKeyedPaths().created.join(" | ")
+);
+
 const routes = danger.git.created_files.filter((modifiedFile) =>
   modifiedFile.includes("route")
 );
@@ -46,11 +51,9 @@ const routeNames = routes.map((route) => {
 message("Routes with names: \n" + routes.join("\n"));
 
 const routesWithoutTests = routeNames.filter(
-  (route) => danger.git.modified_files.includes(`${route}.test.ts`) === false
+  (route) => danger.git.created_files.includes(`${route}.test.ts`) === false
 );
 
 if (routesWithoutTests.length > 0 && routes.length > 0) {
-  message(
-    "The following routes need tests: \n" + routesWithoutTests.join("\n")
-  );
+  fail("The following routes need tests: \n" + routesWithoutTests.join("\n"));
 }
