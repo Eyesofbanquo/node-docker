@@ -1,7 +1,12 @@
-import { message, danger, warn } from "danger";
+import { message, danger, warn, fail } from "danger";
 
 const pr_title = danger.github.pr.title;
 message("Looking at " + pr_title);
+const pr_body = danger.github.pr.body;
+
+if (pr_body.length === 0) {
+  fail("The PR needs a body.");
+}
 
 const modifiedMD = danger.git.modified_files.join("- ");
 message("Changed Files in this PR: \n - " + modifiedMD);
@@ -22,7 +27,23 @@ const routes = danger.git.modified_files.filter((modifiedFile) =>
   modifiedFile.includes("route")
 );
 
-const routesWithoutTests = routes.filter(
+const routeNames = routes.map((route) => {
+  const components = route.split(".");
+  if (
+    (components.length === 3, components[1] === "test", components[2] === "ts")
+  ) {
+    return components[0];
+  } else {
+    fail(
+      "Need to rename the file " +
+        route +
+        " to follow endpoint route name pattern. Consult README"
+    );
+    return;
+  }
+});
+
+const routesWithoutTests = routeNames.filter(
   (route) => danger.git.modified_files.includes(`${route}.test.ts`) === false
 );
 
