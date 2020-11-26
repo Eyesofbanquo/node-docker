@@ -35,7 +35,16 @@ glob.glob("./src/api/**/*.route.ts", (err, matches) => {
   routeNames.forEach((route) => {
     glob.glob(`./src/api/${route}/${route}.test.ts`, (err, matches) => {
       if (matches.length === 0 || err) {
-        fail(`Missing test file for /${route} route.`);
+        fail(
+          "Missing test file for `/" +
+            route +
+            "` route." +
+            "\n\n" +
+            "> 💡 Please add the test file to the path `src/api/" +
+            route +
+            "/`" +
+            "\n This is for project consistency."
+        );
         markdown(
           "> 💡 Please add the test file to the path `src/api/" +
             route +
