@@ -11,7 +11,7 @@ import {
   deleteTokensTable,
   deleteUsersTable,
   getUsersTable,
-} from "../src/api/queries";
+} from "../src/api/login/login.queries";
 import { AppController } from "../server";
 import pool from "../src/db/pool";
 

@@ -11,7 +11,8 @@ import {
   saveRefreshToken,
   checkForResponseToken,
 } from "./src/api/middleware";
-import { createUser, deleteToken, getTokens } from "./src/api/queries";
+import { createUser } from "./src/api/login/login.queries";
+import { deleteToken, getTokens } from "./src/need/a-token/queries";
 import * as glob from "glob";
 
 setup();

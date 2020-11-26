@@ -9,7 +9,8 @@ import {
   createUUIDExtension,
   deleteTokensTable,
   deleteUsersTable,
-} from "../queries";
+} from "./login.queries";
+
 import { AppController } from "../../../server";
 import pool from "../../db/pool";
 

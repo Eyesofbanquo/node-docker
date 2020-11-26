@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import pool from "../db/pool";
 import * as jwt from "jsonwebtoken";
-import { getTokensTable, getUsersTable } from "./queries";
+import { getTokensTable, getUsersTable } from "./login/login.queries";
 
 var salt = bcrypt.genSaltSync();
 
