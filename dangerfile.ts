@@ -30,7 +30,7 @@ glob.glob("./**/*.route.ts", (err, matches) => {
       if (matches.length === 0 || err) {
         fail(`Missing test file for /${route} route.`);
         markdown(
-          "> Please add the test file to the path `src/api/" +
+          "> 💡 Please add the test file to the path `src/api/" +
             route +
             "/`" +
             "\n This is for project consistency."
