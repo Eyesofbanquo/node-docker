@@ -1,10 +1,10 @@
 {
-  "name": "node-docker",
+  "name": "avon",
   "version": "1.0.0",
-  "description": "",
+  "description": "This microservice is to be used along with the Qizzo quiz service and Qizzo client apps.",
   "main": "server.ts",
   "scripts": {
-    "test": "NODE_ENV=ci mocha -r ts-node/register ./**/*.test.ts --exit",
+    "test": "NODE_ENV=ci mocha -r ts-node/register \"./{,!(node_modules)/**/}*.test.ts\" --exit",
     "dev": "nodemon -x ts-node ./server.ts",
     "start": "ts-node ./server.ts",
     "docker:open:test": "docker build -f ./Dockerfile.ci -t avon-test . && docker run --name avon_test -it --entrypoint=/bin/bash avon-test -i",

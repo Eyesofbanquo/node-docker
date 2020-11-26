@@ -3,6 +3,7 @@ import express from "express";
 import * as bodyParser from "body-parser";
 import * as jwt from "jsonwebtoken";
 import pool, { setup } from "./src/db/pool";
+import { router as LoginRouter } from "./src/api/login/login.route";
 import {
   hasher,
   retrieveUser,
@@ -10,7 +11,8 @@ import {
   saveRefreshToken,
   checkForResponseToken,
 } from "./src/api/middleware";
-import { createUser, deleteToken, getTokens } from "./src/api/queries";
+import { createUser } from "./src/api/login/login.queries";
+import { deleteToken, getTokens } from "./src/need/a-token/queries";
 import * as glob from "glob";
 
 setup();
@@ -31,13 +33,10 @@ export class AppController {
 
   setupRoutes() {
     this.app.use(bodyParser.json());
+    this.app.use("/", LoginRouter);
 
     this.app.get("/", (request, response) => {
       response.send({ success: true });
-    });
-
-    this.app.get("/hello", (request, response) => {
-      response.send({ data: "Hello world" });
     });
 
     this.app.post("/register", hasher, async (request, response) => {
@@ -58,26 +57,6 @@ export class AppController {
         })
         .catch((err) => response.send({ success: false, error: err }));
     });
-
-    this.app.post(
-      "/login",
-      retrieveUser,
-      checkForResponseToken,
-      createTokens,
-      saveRefreshToken,
-      (request, response) => {
-        const { user, refreshToken, accessToken } = request.body;
-
-        response.send({
-          success: true,
-          data: {
-            user: user,
-            refreshToken: refreshToken,
-            accessToken: accessToken,
-          },
-        });
-      }
-    );
 
     this.app.post("/refresh", async (request, response) => {
       const { refreshToken } = request.body;
@@ -125,39 +104,6 @@ export class AppController {
 
     this.app.get("/health", (request, response) => {
       response.send("ok");
-    });
-
-    this.app.get("/files", (request, response) => {
-      glob.glob("./**/*.route.ts", (err, matches) => {
-        const routes = matches.map((file) => file.split("/").pop());
-        const routeNames = routes.map((route) => {
-          const components = route.split(".");
-          if (
-            components.length === 3 &&
-            components[1].includes("route") &&
-            components[2].includes("ts")
-          ) {
-            return components[0];
-          } else {
-            return;
-          }
-        });
-
-        let testFiles: string[] = [];
-        routeNames.forEach((route) => {
-          console.log(route);
-          glob.glob(`./src/api/${route}/${route}.test.ts`, (err, matches) => {
-            const routes = matches.map((file) => file.split("/").pop());
-            console.log(routes);
-            if (matches.length !== 0) {
-              testFiles.push(route);
-            }
-          });
-        });
-
-        console.log("Finished");
-        response.send({ data: testFiles });
-      });
     });
   }
 }
