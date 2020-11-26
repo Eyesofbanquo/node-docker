@@ -8,8 +8,9 @@
 
 ### Table of contents
 
-1. [Description](#description)
-2. [Environment Variables](#env)
+1. [Description](/#description)
+2. [Environment Variables](/#env)
+3. [Random](/#random)
 
 ### <a href="#description">Description</a> 
 
