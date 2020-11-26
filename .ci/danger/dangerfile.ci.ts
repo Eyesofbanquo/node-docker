@@ -36,7 +36,7 @@ const endpointFileChecks = (props: { name: string }) => {
         )
         .join("\n\n");
 
-      if (failMessages.length === 0 || err) {
+      if (failMessages.length !== 0 || err) {
         fail(failMessages);
       }
     }
