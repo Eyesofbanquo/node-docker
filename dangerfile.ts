@@ -28,7 +28,12 @@ glob.glob("./**/*.route.ts", (err, matches) => {
   routeNames.forEach((route) => {
     glob.glob(`./src/api/${route}/${route}.test.ts`, (err, matches) => {
       if (matches.length === 0 || err) {
-        fail("Cannot find the test file for the following endpoint: " + route);
+        fail(
+          "Cannot find the test file for the following endpoint: " +
+            route +
+            "\n" +
+            "test spacing"
+        );
         markdown(
           "> Please add the test file to the path `src/api/" +
             route +
