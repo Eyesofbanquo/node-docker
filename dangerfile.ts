@@ -9,7 +9,7 @@ if (pr_body.length === 0) {
 
 if (danger.git.commits.length > 10) {
   warn("There are a total of " + danger.git.commits.length + " commits.");
-  markdown("👀 Try to stay under 10 commits **per PR**.");
+  markdown("> 👀 Try to stay under `10` commits **per PR**.");
 }
 
 const modifiedMD = danger.git.modified_files.join(" | ");
