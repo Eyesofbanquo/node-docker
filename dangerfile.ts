@@ -43,7 +43,7 @@ const routeNames = routes.map((route) => {
   }
 });
 
-message("Routes with names: \n" + routeNames.join("\n"));
+message("Routes with names: \n" + routes.join("\n"));
 
 const routesWithoutTests = routeNames.filter(
   (route) => danger.git.modified_files.includes(`${route}.test.ts`) === false
