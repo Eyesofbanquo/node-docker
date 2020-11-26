@@ -7,10 +7,15 @@ if (pr_body.length === 0) {
   warn("This PR needs a body.");
 }
 
+if (danger.git.commits.length > 10) {
+  warn("There are a total of " + danger.git.commits.length + " commits.");
+  markdown("👀 Try to stay under 10 commits **per PR**.");
+}
+
 const modifiedMD = danger.git.modified_files.join(" | ");
 message("Changed Files in this PR: \n | " + modifiedMD);
 
-glob.glob("./**/*.route.ts", (err, matches) => {
+glob.glob("./src/api/**/*.route.ts", (err, matches) => {
   const routes = matches.map((file) => file.split("/").pop());
   const routeNames = routes.map((route) => {
     const components = route.split(".");
@@ -25,6 +30,8 @@ glob.glob("./**/*.route.ts", (err, matches) => {
       return;
     }
   });
+
+  /* Check to see that the test file exists */
   routeNames.forEach((route) => {
     glob.glob(`./src/api/${route}/${route}.test.ts`, (err, matches) => {
       if (matches.length === 0 || err) {
@@ -38,4 +45,7 @@ glob.glob("./**/*.route.ts", (err, matches) => {
       }
     });
   });
+
+  /* Check to see that the queries file exists */
+  /* Check to see that the schema file exists */
 });
