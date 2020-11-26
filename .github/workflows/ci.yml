@@ -42,4 +42,5 @@ jobs:
 
       - name: Run Danger
         run: npm run danger
-        env: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
