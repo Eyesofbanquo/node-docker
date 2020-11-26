@@ -8,8 +8,13 @@ if (pr_body.length === 0) {
 }
 
 if (danger.git.commits.length > 10) {
-  warn("There are a total of " + danger.git.commits.length + " commits.");
-  markdown("> 👀 Try to stay under `10` commits **per PR**.");
+  warn(
+    "There are a total of " +
+      danger.git.commits.length +
+      " commits." +
+      "\n\n" +
+      "> 💡 Try to stay under `10` commits **per PR**."
+  );
 }
 
 const modifiedMD = danger.git.modified_files.join(" | ");
@@ -42,14 +47,7 @@ glob.glob("./src/api/**/*.route.ts", (err, matches) => {
             "\n\n" +
             "> 💡 Please add the test file to the path `src/api/" +
             route +
-            "/`" +
-            "\n This is for project consistency."
-        );
-        markdown(
-          "> 💡 Please add the test file to the path `src/api/" +
-            route +
-            "/`" +
-            "\n This is for project consistency."
+            "/`"
         );
       }
     });
