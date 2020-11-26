@@ -24,9 +24,13 @@ if (commitsWithoutMessages.length > 0) {
 }
 
 const routesSmoker = danger.git.fileMatch("./**/*.route.ts");
+
 message(
   "Here are the routes:" + routesSmoker.getKeyedPaths().created.join(" | ")
 );
+
+const allRoutes = [routesSmoker.created, routesSmoker.modified];
+const testRoutes = allRoutes.map(())
 
 const routes = danger.git.created_files.filter((modifiedFile) =>
   modifiedFile.includes("route")
@@ -48,7 +52,7 @@ const routeNames = routes.map((route) => {
   }
 });
 
-message("Routes with names: \n" + routes.join("\n"));
+message("Routes with names: \n" + routeNames.join("\n"));
 
 const routesWithoutTests = routeNames.filter(
   (route) => danger.git.created_files.includes(`${route}.test.ts`) === false
