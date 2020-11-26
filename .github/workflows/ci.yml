@@ -44,6 +44,6 @@ jobs:
         run: docker-compose -f docker-compose.ci.yml --project-name ${{secrets.DOCKER_CI_PROJECT_NAME}} up --exit-code-from web
 
       - name: Run Danger
-        run: npm run danger --dangerfile ./.ci/danger/dangerfile.ts
+        run: npm run danger:ci:pr
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
