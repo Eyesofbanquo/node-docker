@@ -11,6 +11,7 @@ import {
   checkForResponseToken,
 } from "./src/api/middleware";
 import { createUser, deleteToken, getTokens } from "./src/api/queries";
+import * as glob from "glob";
 
 setup();
 
@@ -124,6 +125,39 @@ export class AppController {
 
     this.app.get("/health", (request, response) => {
       response.send("ok");
+    });
+
+    this.app.get("/files", (request, response) => {
+      glob.glob("./**/*.route.ts", (err, matches) => {
+        const routes = matches.map((file) => file.split("/").pop());
+        const routeNames = routes.map((route) => {
+          const components = route.split(".");
+          if (
+            components.length === 3 &&
+            components[1].includes("route") &&
+            components[2].includes("ts")
+          ) {
+            return components[0];
+          } else {
+            return;
+          }
+        });
+
+        let testFiles: string[] = [];
+        routeNames.forEach((route) => {
+          console.log(route);
+          glob.glob(`./src/api/${route}/${route}.test.ts`, (err, matches) => {
+            const routes = matches.map((file) => file.split("/").pop());
+            console.log(routes);
+            if (matches.length !== 0) {
+              testFiles.push(route);
+            }
+          });
+        });
+
+        console.log("Finished");
+        response.send({ data: testFiles });
+      });
     });
   }
 }
