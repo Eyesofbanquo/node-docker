@@ -4,11 +4,11 @@ import * as glob from "glob";
 const pr_body = danger.github.pr.body;
 
 if (pr_body.length === 0) {
-  fail("The PR needs a body.");
+  warn("This PR needs a body.");
 }
 
-const modifiedMD = danger.git.modified_files.join("- ");
-message("Changed Files in this PR: \n - " + modifiedMD);
+const modifiedMD = danger.git.modified_files.join(" | ");
+message("Changed Files in this PR: \n | " + modifiedMD);
 
 glob.glob("./**/*.route.ts", (err, matches) => {
   const routes = matches.map((file) => file.split("/").pop());
@@ -28,18 +28,12 @@ glob.glob("./**/*.route.ts", (err, matches) => {
   routeNames.forEach((route) => {
     glob.glob(`./src/api/${route}/${route}.test.ts`, (err, matches) => {
       if (matches.length === 0 || err) {
-        fail(
-          `Cannot find the test file for the following endpoint: 
-          ${route}
-          
-          
-          Is all of this on the same line still?`
-        );
+        fail(`Missing test file for: ${route}`);
         markdown(
           "> Please add the test file to the path `src/api/" +
             route +
-            "/" +
-            "\n This is for consistency."
+            "/`" +
+            "\n This is for project consistency."
         );
       }
     });
