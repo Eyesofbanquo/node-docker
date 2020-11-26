@@ -32,7 +32,7 @@ const endpointFileChecks = (props: { name: string }) => {
         )
         .map(
           (need) =>
-            `Missing ${need} for /${name}\n\nPlease add the ${need} file to the path \`src/api/${name}\``
+            `**Missing ${need} for** \`/${name}\`\n\nPlease add a \`${name}.${need}.ts\` file to the path \`src/api/${name}\``
         )
         .join("\n\n");
 
