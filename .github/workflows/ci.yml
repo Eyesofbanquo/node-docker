@@ -37,6 +37,9 @@ jobs:
           # Log out from the Docker registry at the end of a job
           logout: true
 
+      - name: Fetch dependencies
+        run: npm install ts-node && npm ci --also=dev
+
       - name: Build & Run Tests
         run: docker-compose -f docker-compose.ci.yml --project-name ${{secrets.DOCKER_CI_PROJECT_NAME}} up --exit-code-from web
 
