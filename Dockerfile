@@ -11,10 +11,10 @@ COPY ["package.json", "package-lock.json*", "./"]
 RUN apt-get update && apt-get install -y postgresql
 
 # Turn on when this file needs to be self contained
-#RUN npm install ts-node
+RUN npm install ts-node
 
 # Turn on when this file needs to be self contained
-#RUN npm install --production
+RUN npm install --production
 
 COPY . .
 

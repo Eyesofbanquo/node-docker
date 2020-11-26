@@ -41,14 +41,6 @@ jobs:
         run: echo "::set-output name=DOCKER_COMMIT::$(git rev-parse --short ${GITHUB_SHA})"
         id: extract_commit
 
-      - name: Fetch dependencies
-        run: npm install ts-node && npm install --production
-
-      - name: Run Danger
-        run: npm run danger:ci:prod
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Docker Setup Buildx
         # You may pin to the exact commit or the version.
         # uses: docker/setup-buildx-action@07b1484797040ef4a1109a03e65b923de8f39e07

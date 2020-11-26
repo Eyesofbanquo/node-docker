@@ -23,14 +23,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Fetch dependencies
-        run: npm install ts-node && npm install --production
-
-      - name: Run Danger
-        run: npm run danger:ci:prod
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Log into heroku cli
         uses: akhileshns/heroku-deploy@v3.6.8 # This is the action
         with:
