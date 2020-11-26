@@ -20,6 +20,29 @@ if (danger.git.commits.length > 10) {
 const modifiedMD = danger.git.modified_files.join(" | ");
 message("Changed Files in this PR: \n\n " + modifiedMD);
 
+const endpointFileChecks = (props: { name: string }) => {
+  const { name } = props;
+  glob.glob(
+    `./src/api/${name}/${name}.{test,queries,schema}.ts`,
+    (err, matches) => {
+      const needs = ["test", "queries", "schema"];
+      const failMessages = needs
+        .filter(
+          (need) => matches.find((match) => match.includes(need)) === undefined
+        )
+        .map(
+          (need) =>
+            `Missing ${need} for /${name}\n\nPlease add the ${need} file to the path \`src/api/${name}\``
+        )
+        .join("\n\n");
+
+      if (failMessages.length === 0 || err) {
+        fail(failMessages);
+      }
+    }
+  );
+};
+
 glob.glob("./src/api/**/*.route.ts", (err, matches) => {
   const routes = matches.map((file) => file.split("/").pop());
   const routeNames = routes.map((route) => {
@@ -38,21 +61,6 @@ glob.glob("./src/api/**/*.route.ts", (err, matches) => {
 
   /* Check to see that the test file exists */
   routeNames.forEach((route) => {
-    glob.glob(`./src/api/${route}/${route}.test.ts`, (err, matches) => {
-      if (matches.length === 0 || err) {
-        fail(
-          "Missing test file for `/" +
-            route +
-            "` route." +
-            "\n\n" +
-            "> 💡 Please add the test file to the path `src/api/" +
-            route +
-            "/`"
-        );
-      }
-    });
+    endpointFileChecks({ name: route });
   });
-
-  /* Check to see that the queries file exists */
-  /* Check to see that the schema file exists */
 });
