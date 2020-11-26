@@ -8,16 +8,16 @@
 
 ### Table of contents
 
-1. [Description](/#description)
-2. [Environment Variables](/#env)
-3. [Random](/#random)
+1. [Description](#description)
+2. [Environment Variables](#env)
+3. [Random](#random)
 
-### <a href="#description">Description</a> 
+### <a name="description"></a><a href="#description">Description</a> 
 
 This `microservice` is to be used along with the `Qizzo` quiz service and `Qizzo` client apps.
 
 
-### <a href="#env">Environment Variables</a>
+### <a name="env"></><a href="#env">Environment Variables</a>
 
 The following variables need to be set inside your `.env` file.
 
@@ -68,7 +68,7 @@ I spend it in the mall, twenty thousand on jeans
 Me and Wheezy Wave havin' codeine dreams
 Nigga play with me, he'll spray at your tee
 
-### <a href="#random">Random</a>
+### <a name="random"></a><a href="#random">Random</a>
 
 Blah
 
