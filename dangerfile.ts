@@ -1,4 +1,5 @@
 import { message, danger, warn, fail } from "danger";
+import * as glob from "glob";
 
 const pr_title = danger.github.pr.title;
 message("Looking at " + pr_title);
@@ -29,35 +30,26 @@ message(
   "Here are the routes:" + routesSmoker.getKeyedPaths().created.join(" | ")
 );
 
-const allRoutes = [routesSmoker.created, routesSmoker.modified];
-const testRoutes = allRoutes.map(())
-
-const routes = danger.git.created_files.filter((modifiedFile) =>
-  modifiedFile.includes("route")
-);
-
-const routeNames = routes.map((route) => {
-  const components = route.split(".");
-  if (
-    (components.length === 3, components[1] === "test", components[2] === "ts")
-  ) {
-    return components[0];
-  } else {
-    fail(
-      "Need to rename the file " +
-        route +
-        " to follow endpoint route name pattern. Consult README"
-    );
-    return;
-  }
+glob.glob("./**/*.route.ts", (err, matches) => {
+  const routes = matches.map((file) => file.split("/").pop());
+  const routeNames = routes.map((route) => {
+    const components = route.split(".");
+    if (
+      components.length === 3 &&
+      components[1].includes("route") &&
+      components[2].includes("ts")
+    ) {
+      return components[0];
+    } else {
+      fail("Need to have a test file for " + route);
+      return;
+    }
+  });
+  routeNames.forEach((route) => {
+    glob.glob(`./src/api/${route}/${route}.test.ts`, (err, matches) => {
+      if (matches.length === 0 || err) {
+        fail("Cannot find the test file for: " + route);
+      }
+    });
+  });
 });
-
-message("Routes with names: \n" + routeNames.join("\n"));
-
-const routesWithoutTests = routeNames.filter(
-  (route) => danger.git.created_files.includes(`${route}.test.ts`) === false
-);
-
-if (routesWithoutTests.length > 0 && routes.length > 0) {
-  fail("The following routes need tests: \n" + routesWithoutTests.join("\n"));
-}
