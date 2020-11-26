@@ -23,7 +23,7 @@ if (commitsWithoutMessages.length > 0) {
   );
 }
 
-const routes = danger.git.modified_files.filter((modifiedFile) =>
+const routes = danger.git.created_files.filter((modifiedFile) =>
   modifiedFile.includes("route")
 );
 
