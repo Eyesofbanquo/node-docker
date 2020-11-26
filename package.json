@@ -11,7 +11,7 @@
     "docker:test": "docker-compose -f docker-compose.ci.yml up --exit-code-from web",
     "tsc": "tsc",
     "danger": "danger ci",
-    "danger:ci:pr": "danger --dangerfile ./.ci/danger/dangerfile.ts ci",
+    "danger:ci:pr": "danger --dangerfile ./.ci/danger/dangerfile.ci.ts ci",
     "danger:local": "danger pr"
   },
   "author": "",
