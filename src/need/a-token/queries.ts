@@ -19,6 +19,25 @@ export const createTokensTable = () => {
   )`);
 };
 
+interface CreateTokenProps {
+  userId: string;
+  refreshToken: string;
+}
+/**
+ *
+ * @param {CreateTokenProps} props -
+ */
+export const createToken = (props: CreateTokenProps) => {
+  const { userId, refreshToken } = props;
+  return pool.query(
+    `INSERT INTO ${getTokensTable()} (user_id, refresh_token)
+  VALUES ($1, $2) 
+  ON CONFLICT DO NOTHING
+  RETURNING *`,
+    [userId, refreshToken]
+  );
+};
+
 export const getTokens = () => {
   return pool.query(`SELECT * FROM ${getTokensTable()}`);
 };

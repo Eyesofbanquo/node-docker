@@ -25,6 +25,10 @@ export const getUsers = () => {
   return pool.query(`SELECT * FROM ${getUsersTable()}`);
 };
 
+/**
+ * Create a user inside the appropriate `env` database.
+ * @param props
+ */
 export const createUser = (props: { username: string; password: string }) => {
   return pool.query(
     `INSERT INTO ${getUsersTable()} (username, password, is_admin)

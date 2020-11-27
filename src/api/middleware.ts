@@ -2,13 +2,22 @@ import bcrypt from "bcrypt";
 import pool from "../db/pool";
 import * as jwt from "jsonwebtoken";
 import { getTokensTable, getUsersTable } from "./login/login.queries";
+import { expirationDate } from "../need/a-token/refresh";
+import { Router, Request, NextFunction } from "express";
 
 var salt = bcrypt.genSaltSync();
 
 const secret_token = process.env.JWT_SECRET;
 const secret_refresh_token = process.env.JWT_REFRESH_SECRET;
 
-export const retrieveUser = async (request, response, next) => {
+/**
+ * ! Middleware
+ * Retreives a user from the database then checks the password.
+ * @param {Request} request - The HTTP Request.
+ * @param {Response} response - The HTTP Response.
+ * @param {NextFunction} next - The function that forwards to the next available request.
+ */
+export const checkUserPassword = async (request, response, next) => {
   const { username, password } = request.body;
 
   await pool
@@ -68,7 +77,7 @@ export const createTokens = (request, response, next) => {
     const accessToken = jwt.sign(
       { username: user.username, id: user.id, admin: user.is_admin },
       secret_token,
-      { expiresIn: "20m" }
+      { expiresIn: expirationDate }
     );
     const refreshToken = jwt.sign(
       { username: user.username, id: user.id, admin: user.is_admin },
