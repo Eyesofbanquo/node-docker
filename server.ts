@@ -4,6 +4,7 @@ import * as bodyParser from "body-parser";
 import * as jwt from "jsonwebtoken";
 import pool, { setup } from "./src/db/pool";
 import { router as LoginRouter } from "./src/api/login/login.route";
+import { router as RegisterRouter } from "./src/api/register/register.route";
 import {
   hasher,
   retrieveUser,
@@ -11,7 +12,7 @@ import {
   saveRefreshToken,
   checkForResponseToken,
 } from "./src/api/middleware";
-import { createUser } from "./src/api/login/login.queries";
+import { createUser } from "./src/need/a-user/queries";
 import { deleteToken, getTokens } from "./src/need/a-token/queries";
 import * as glob from "glob";
 
@@ -33,29 +34,11 @@ export class AppController {
 
   setupRoutes() {
     this.app.use(bodyParser.json());
-    this.app.use("/", LoginRouter);
+    this.app.use(LoginRouter);
+    this.app.use(RegisterRouter);
 
     this.app.get("/", (request, response) => {
       response.send({ success: true });
-    });
-
-    this.app.post("/register", hasher, async (request, response) => {
-      const { username, password } = request.body;
-
-      await createUser({ username: username, password: password })
-        .then((res) => {
-          if (res.rows.length === 0) {
-            response.send({
-              success: false,
-              data: { message: "User already exists" },
-            });
-          }
-
-          if (res.rows.length > 0) {
-            response.send({ success: true, data: res.rows[0] });
-          }
-        })
-        .catch((err) => response.send({ success: false, error: err }));
     });
 
     this.app.post("/refresh", async (request, response) => {
