@@ -48,6 +48,25 @@ describe("Register", () => {
     });
   });
 
+  context("Given the user '   Eyes    ' is looking to register", () => {
+    it("Should sanitize the username", (done) => {
+      const controller = new AppController();
+
+      chai
+        .request(controller.app)
+        .post("/register")
+        .send({ username: "   Eyes    ", password: "Random" })
+        .then((results) => {
+          expect(results.status).to.equal(200);
+          expect(results.body.success).to.be.true;
+          expect(results.body.data.username).to.equal("Eyes");
+          expect(results.body.data.password).to.not.exist;
+          done();
+        })
+        .catch((err) => done(err));
+    });
+  });
+
   context('Given the user "Eyes" already exists', () => {
     const uuid = uuidv4();
     beforeEach((done) => {
