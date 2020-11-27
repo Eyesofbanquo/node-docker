@@ -5,16 +5,10 @@ import * as jwt from "jsonwebtoken";
 import pool, { setup } from "./src/db/pool";
 import { router as LoginRouter } from "./src/api/login/login.route";
 import { router as RegisterRouter } from "./src/api/register/register.route";
-import {
-  hasher,
-  retrieveUser,
-  createTokens,
-  saveRefreshToken,
-  checkForResponseToken,
-} from "./src/api/middleware";
-import { createUser } from "./src/need/a-user/queries";
+import { router as RefreshRouter } from "./src/api/refresh/refresh.route";
+import { router as LogoutRouter } from "./src/api/logout/logout.route";
+import { router as HealthCheck } from "./src/api/health-check/health";
 import { deleteToken, getTokens } from "./src/need/a-token/queries";
-import * as glob from "glob";
 
 setup();
 
@@ -36,57 +30,12 @@ export class AppController {
     this.app.use(bodyParser.json());
     this.app.use(LoginRouter);
     this.app.use(RegisterRouter);
+    this.app.use(RefreshRouter);
+    this.app.use(LogoutRouter);
+    this.app.use(HealthCheck);
 
     this.app.get("/", (request, response) => {
       response.send({ success: true });
-    });
-
-    this.app.post("/refresh", async (request, response) => {
-      const { refreshToken } = request.body;
-
-      if (!refreshToken) {
-        return response.sendStatus(401);
-      }
-
-      await getTokens()
-        .then((results) => {
-          const tokenExists = results.rows.find(
-            (tokenRow) => tokenRow.refresh_token === refreshToken
-          );
-          if (tokenExists) {
-            jwt.verify(refreshToken, secret_refresh_token, (err, user) => {
-              if (err) {
-                return response.sendStatus(403);
-              }
-              const accessToken = jwt.sign(
-                { username: user.username, id: user.id, admin: user.is_admin },
-                secret_token,
-                { expiresIn: "20m" }
-              );
-              response.send({
-                success: true,
-                data: { accessToken: accessToken },
-              });
-            });
-          } else {
-            return response.sendStatus(403);
-          }
-        })
-        .catch((err) => response.send({ success: false, error: err }));
-    });
-
-    this.app.post("/logout", async (request, response) => {
-      const { id } = request.body;
-
-      await deleteToken({ userId: id })
-        .then((results) => {
-          response.send({ success: true, data: { message: "Logged out!" } });
-        })
-        .catch((err) => response.send({ success: false, error: err }));
-    });
-
-    this.app.get("/health", (request, response) => {
-      response.send("ok");
     });
   }
 }

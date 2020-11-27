@@ -2,7 +2,7 @@ import { Router } from "express";
 import * as bodyParser from "body-parser";
 import * as jwt from "jsonwebtoken";
 import {
-  retrieveUser,
+  checkUserPassword,
   checkForResponseToken,
   createTokens,
   saveRefreshToken,
@@ -14,7 +14,7 @@ router.use(bodyParser.json());
 
 router.post(
   "/login",
-  retrieveUser,
+  checkUserPassword,
   checkForResponseToken,
   createTokens,
   saveRefreshToken,
