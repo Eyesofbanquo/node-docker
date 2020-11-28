@@ -27,8 +27,6 @@ router.post(
       return response.sendStatus(401);
     }
 
-    console.log("yes");
-
     await getTokens()
       .then((results) => {
         const tokenExists = results.rows.find(
