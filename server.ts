@@ -7,6 +7,7 @@ import { router as RegisterRouter } from "./src/api/register/register.route";
 import { router as RefreshRouter } from "./src/api/refresh/refresh.route";
 import { router as LogoutRouter } from "./src/api/logout/logout.route";
 import { router as HealthCheck } from "./src/api/health-check/health";
+import { router as UsersRouter } from "./src/api/users/users.route";
 
 setup();
 
@@ -28,6 +29,7 @@ export class AppController {
     this.app.use(RefreshRouter);
     this.app.use(LogoutRouter);
     this.app.use(HealthCheck);
+    this.app.use(UsersRouter);
 
     this.app.get("/", (request, response) => {
       response.send({ success: true });
