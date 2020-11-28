@@ -1,5 +1,6 @@
 require("dotenv").config();
 import express from "express";
+import cors from "cors";
 import * as bodyParser from "body-parser";
 import pool, { setup } from "./src/db/pool";
 import { router as LoginRouter } from "./src/api/login/login.route";
@@ -39,6 +40,7 @@ export class AppController {
 
 const controller = new AppController();
 
+controller.app.use(cors());
 controller.app.listen(controller.port, () =>
   console.log("Running on port", controller.port)
 );
