@@ -48,6 +48,23 @@ describe("Refresh Endpoint", () => {
     await deleteUsersTable().catch();
   });
 
+  context("Refresh sanitization", () => {
+    it("should error for non JWT tokens", (done) => {
+      const controller = new AppController();
+
+      chai
+        .request(controller.app)
+        .post("/refresh")
+        .send({ refreshToken: "hep" })
+        .then((results) => {
+          expect(results.body.success).to.be.false;
+          expect(results.body.error).to.not.be.undefined;
+          done();
+        })
+        .catch((error) => done(error));
+    });
+  });
+
   context("Given the user exists", () => {
     const uuid = uuidv4();
     const refreshToken = createToken({

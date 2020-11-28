@@ -7,43 +7,55 @@ import {
   secret_token,
 } from "../../need/a-secret/secrets";
 import { expirationDate } from "../../need/a-token/refresh";
+import {
+  refreshTokenValidationRules,
+  validateRefreshToken,
+} from "../../need/a-validator/refresh-validation";
 
 export const router = Router();
 
 router.use(bodyParser.json());
 
-router.post("/refresh", async (request, response) => {
-  const { refreshToken } = request.body;
+router.post(
+  "/refresh",
+  refreshTokenValidationRules(),
+  validateRefreshToken,
+  async (request, response) => {
+    const { refreshToken } = request.body;
 
-  if (!refreshToken) {
-    console.log("help");
-    return response.sendStatus(401);
-  }
+    if (!refreshToken) {
+      return response.sendStatus(401);
+    }
 
-  await getTokens()
-    .then((results) => {
-      const tokenExists = results.rows.find(
-        (tokenRow) => tokenRow.refresh_token === refreshToken
-      );
-      if (tokenExists) {
-        jwt.verify(refreshToken, secret_refresh_token, (err, user) => {
-          if (err) {
-            return response.sendStatus(403);
-          }
-          const accessToken = jwt.sign(
-            { username: user.username, id: user.id, admin: user.is_admin },
-            secret_token,
-            { expiresIn: expirationDate }
-          );
-          response.send({
-            success: true,
-            data: { accessToken: accessToken },
+    console.log("yes");
+
+    await getTokens()
+      .then((results) => {
+        const tokenExists = results.rows.find(
+          (tokenRow) => tokenRow.refresh_token === refreshToken
+        );
+        if (tokenExists) {
+          jwt.verify(refreshToken, secret_refresh_token, (err, user) => {
+            if (err) {
+              return response.sendStatus(403);
+            }
+            const accessToken = jwt.sign(
+              { username: user.username, id: user.id, admin: user.is_admin },
+              secret_token,
+              { expiresIn: expirationDate }
+            );
+            response.send({
+              success: true,
+              data: { accessToken: accessToken },
+            });
           });
-        });
-      } else {
-        console.log("help");
-        return response.sendStatus(403);
-      }
-    })
-    .catch((err) => response.send({ success: false, error: "Token mismatch" }));
-});
+        } else {
+          console.log("help");
+          return response.sendStatus(403);
+        }
+      })
+      .catch((err) =>
+        response.send({ success: false, error: "Token mismatch" })
+      );
+  }
+);
