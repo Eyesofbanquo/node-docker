@@ -17,7 +17,9 @@ if (danger.git.commits.length > 10) {
   );
 }
 
-const modifiedMD = danger.git.modified_files.join(" | ");
+const modifiedMD = danger.git.modified_files
+  .map((file) => "* " + file)
+  .join("\n\n");
 message("Changed Files in this PR: \n\n " + modifiedMD);
 
 const endpointFileChecks = (props: { name: string }) => {
