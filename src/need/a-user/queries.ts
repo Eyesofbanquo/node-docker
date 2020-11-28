@@ -17,12 +17,17 @@ export const createUsersTable = () => {
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     is_admin BOOLEAN NOT NULL,
+    deleted BOOLEAN NOT NULL DEFAULT false,
     created_date TIMESTAMP DEFAULT (now() at time zone 'utc')
   )`);
 };
 
 export const getUsers = () => {
   return pool.query(`SELECT * FROM ${getUsersTable()}`);
+};
+
+export const getAvailableUsers = () => {
+  return pool.query(`SELECT * FROM ${getUsersTable()} WHERE deleted = false;`);
 };
 
 /**
