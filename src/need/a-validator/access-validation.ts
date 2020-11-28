@@ -24,6 +24,10 @@ export const accessTokenValidationRules = () => {
               `Authorization needs "Bearer" before the access token.`
             );
           }
+
+          if (token === undefined) {
+            return Promise.reject(`Authorization needs a jwt access token`);
+          }
           await jwt.verify(token, secret_token, (err, user) => {
             if (err !== null) {
               console.log(err);

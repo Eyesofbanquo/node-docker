@@ -11,7 +11,7 @@ export const createTestUser = async () => {
     [testUUID, "test", "testpassword", false, false]
   );
   await pool.query(
-    `INSERT INTO ${getTokensTable()} (id, refresh_token) VALUES ($1, $2)`,
+    `INSERT INTO ${getTokensTable()} (user_id, refresh_token) VALUES ($1, $2)`,
     [testUUID, process.env.TEST_REFRESH_TOKEN]
   );
 };
