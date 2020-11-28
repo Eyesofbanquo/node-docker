@@ -65,3 +65,9 @@ jobs:
         with:
           push: true
           tags: eyesofbanquo/${{secrets.PROD_NAME}}:${{steps.extract_branch.outputs.DOCKER_BRANCH}}-${{steps.extract_commit.outputs.DOCKER_COMMIT}}
+
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.26.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
