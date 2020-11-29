@@ -13,6 +13,8 @@ services:
       - JWT_SECRET
       - JWT_REFRESH_SECRET
       - DATABASE_URL
+      - TEST_REFRESH_TOKEN
+      - TEST_ACCESS_TOKEN
   db:
     image: postgres:latest
     environment:

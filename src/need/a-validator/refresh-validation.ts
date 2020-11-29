@@ -6,9 +6,7 @@ export const refreshTokenValidationRules = () => {
 export const validateRefreshToken = (request, response, next) => {
   const errors = validationResult(request);
 
-  console.log("hello");
   if (errors.isEmpty()) {
-    console.log("hello");
     return next();
   }
 

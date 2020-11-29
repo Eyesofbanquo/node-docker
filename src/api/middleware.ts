@@ -3,7 +3,7 @@ import pool from "../db/pool";
 import * as jwt from "jsonwebtoken";
 import { getTokensTable, getUsersTable } from "./login/login.queries";
 import { expirationDate } from "../need/a-token/refresh";
-import { Router, Request, NextFunction } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 
 var salt = bcrypt.genSaltSync();
 
@@ -131,5 +131,35 @@ export const hasher = (request, response, next) => {
       request.body.password = hash;
       next();
     }
+  });
+};
+
+/**
+ * Unpack the refresh token and return the underlying data.
+ * @param request The HTTP Request.
+ * @param response The HTTP Response.
+ * @param next The function that forwards the request
+ */
+export const unpackRefreshToken = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  const { refreshToken } = request.body;
+  console.log("Hello");
+
+  await jwt.verify(refreshToken, secret_refresh_token, (err, user) => {
+    if (err) {
+      return response
+        .status(200)
+        .send({ success: false, error: "Invalid refresh token" });
+    }
+
+    request.body.id = user.id;
+    request.body.is_admin = user.is_admin;
+    request.body.deleted = user.deleted;
+    request.body.username = user.username;
+
+    next();
   });
 };

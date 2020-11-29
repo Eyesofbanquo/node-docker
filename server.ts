@@ -1,19 +1,16 @@
 require("dotenv").config();
 import express from "express";
+import cors from "cors";
 import * as bodyParser from "body-parser";
-import * as jwt from "jsonwebtoken";
 import pool, { setup } from "./src/db/pool";
 import { router as LoginRouter } from "./src/api/login/login.route";
 import { router as RegisterRouter } from "./src/api/register/register.route";
 import { router as RefreshRouter } from "./src/api/refresh/refresh.route";
 import { router as LogoutRouter } from "./src/api/logout/logout.route";
 import { router as HealthCheck } from "./src/api/health-check/health";
-import { deleteToken, getTokens } from "./src/need/a-token/queries";
+import { router as UsersRouter } from "./src/api/users/users.route";
 
 setup();
-
-const secret_token = process.env.JWT_SECRET;
-const secret_refresh_token = process.env.JWT_REFRESH_SECRET;
 
 export class AppController {
   app: express.Express;
@@ -33,6 +30,7 @@ export class AppController {
     this.app.use(RefreshRouter);
     this.app.use(LogoutRouter);
     this.app.use(HealthCheck);
+    this.app.use(UsersRouter);
 
     this.app.get("/", (request, response) => {
       response.send({ success: true });
@@ -42,6 +40,7 @@ export class AppController {
 
 const controller = new AppController();
 
+controller.app.use(cors());
 controller.app.listen(controller.port, () =>
   console.log("Running on port", controller.port)
 );

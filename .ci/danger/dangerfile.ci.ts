@@ -1,12 +1,6 @@
 import { message, danger, warn, fail, markdown } from "danger";
 import * as glob from "glob";
 
-const pr_body = danger.github.pr.body;
-
-if (pr_body.length === 0) {
-  warn("This PR needs a body.");
-}
-
 if (danger.git.commits.length > 10) {
   warn(
     "There are a total of " +

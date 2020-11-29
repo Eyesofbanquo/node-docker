@@ -20,11 +20,12 @@ router.post(
   saveRefreshToken,
   (request, response) => {
     const { user, refreshToken, accessToken } = request.body;
+    const { id, username } = user;
 
     response.send({
       success: true,
       data: {
-        user: user,
+        user: { id, username },
         refreshToken: refreshToken,
         accessToken: accessToken,
       },
