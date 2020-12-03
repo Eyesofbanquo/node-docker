@@ -13,17 +13,17 @@ const testCommits = commits.find((commit) =>
 );
 
 export const grader = () => {
-  if (setupCommits === undefined) {
+  if (setupCommits) {
     warn(
       "Missing a commit indicating the setup for this PR. Please include commit with 🔓 in the title next time."
     );
   }
-  if (actionCommits === undefined) {
+  if (actionCommits) {
     warn(
       "Missing a commit indicating the action for this PR. Please include commit with 🎬 in the title next time."
     );
   }
-  if (testCommits === undefined) {
+  if (testCommits) {
     warn(
       "Missing a commit indicating the test for this PR. Please include commit with 🔒 in the title next time."
     );
