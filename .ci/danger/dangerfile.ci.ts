@@ -19,4 +19,4 @@ const modifiedMD = danger.git.modified_files
 message("Changed Files in this PR: \n\n " + modifiedMD);
 
 routeChecker();
-grader();
+// grader();
