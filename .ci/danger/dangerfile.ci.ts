@@ -80,17 +80,17 @@ const testCommits = commits.find((commit) =>
 );
 
 const grader = () => {
-  if (setupCommits) {
+  if (setupCommits === undefined) {
     warn(
       "Missing a commit indicating the setup for this PR. Please include commit with 🔓 in the title next time."
     );
   }
-  if (actionCommits) {
+  if (actionCommits === undefined) {
     warn(
       "Missing a commit indicating the action for this PR. Please include commit with 🎬 in the title next time."
     );
   }
-  if (testCommits) {
+  if (testCommits === undefined) {
     warn(
       "Missing a commit indicating the test for this PR. Please include commit with 🔒 in the title next time."
     );
@@ -98,3 +98,4 @@ const grader = () => {
 };
 
 routeChecker();
+grader();
