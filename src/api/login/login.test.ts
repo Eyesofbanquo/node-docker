@@ -104,14 +104,16 @@ describe("Login Tests", () => {
         .catch((err) => console.log(err));
     });
 
-    it("should send message saying user is already logged in", (done) => {
+    it("should return an access token", (done) => {
       const controller = new AppController();
       chai
         .request(controller.app)
         .post("/login")
         .send({ username: "Eyes", password: "Random" })
         .then((results) => {
-          expect(results.body.data.message).to.not.be.undefined;
+          expect(results.body.success).to.be.true;
+          expect(results.body.data.accessToken).to.not.be.undefined;
+          expect(results.body.data.user.username).to.eql("Eyes");
           done();
         })
         .catch((err) => done(err));

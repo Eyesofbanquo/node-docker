@@ -59,10 +59,23 @@ export const checkForResponseToken = async (request, response, next) => {
     .then((results) => {
       const row = results.rows.find((tokenRow) => tokenRow.user_id === user.id);
       if (row) {
-        response.send({
-          success: false,
-          data: { message: "User is already logged in" },
-        });
+        try {
+          const accessToken = jwt.sign(
+            { username: user.username, id: user.id, admin: user.is_admin },
+            secret_token,
+            { expiresIn: expirationDate }
+          );
+          response.send({
+            success: true,
+            data: {
+              user: user,
+              accessToken: accessToken,
+              refreshToken: row.refresh_token,
+            },
+          });
+        } catch (error) {
+          next(error);
+        }
       } else {
         next();
       }
