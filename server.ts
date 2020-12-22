@@ -24,6 +24,7 @@ export class AppController {
   }
 
   setupRoutes() {
+    this.app.use(cors());
     this.app.use(bodyParser.json());
     this.app.use(LoginRouter);
     this.app.use(RegisterRouter);
@@ -35,12 +36,14 @@ export class AppController {
     this.app.get("/", (request, response) => {
       response.send({ success: true });
     });
+    this.app.get("/example", (request, response) => {
+      response.send("Example text");
+    });
   }
 }
 
 const controller = new AppController();
 
-controller.app.use(cors());
 controller.app.listen(controller.port, () =>
   console.log("Running on port", controller.port)
 );
